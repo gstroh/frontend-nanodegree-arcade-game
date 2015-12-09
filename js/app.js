@@ -20,12 +20,33 @@ Enemy.prototype.update = function(dt) {
     // all computers.
     this.x = this.x + (this.speed * dt);
     // check to see if off screen
-    Enemy.prototype.checkRightBoundary();
+    Enemy.prototype.checkRightBoundary(this);
+    // check for collision with Player.
+    Enemy.prototype.checkCollision(this);
 };
 
-Enemy.prototype.checkRightBoundary = function() {
-    if (this.x >= 505) {
-        this.x = 0;
+Enemy.prototype.checkRightBoundary = function(enemyInstance) {
+    if (enemyInstance.x >= 505) {
+        enemyInstance.x = 0;
+    }
+}
+
+Enemy.prototype.checkCollision = function(enemyInstance) {
+    // Check if the y axis has collided.
+    //console.log('enemyInstance.y = ' + enemyInstance.y)
+    //console.log('player.y = ' + player.y)
+    if (enemyInstance.y + 20 == player.y + 10) {
+        console.log('y collision');
+        // check if the x axis has collided too!
+        var minX = Math.min(enemyInstance.x, player.x);
+        var maxX = Math.max(enemyInstance.x + 101, player.x + 101);
+        console.log('minX = ' + minX);
+        console.log('maxX = ' + maxX);
+        if ((maxX - minX) < (101 * 2) - 1) {
+            console.log('collision');
+            player.x = 101 * 2;
+            player.y = (83 * 5) - 10;
+        }
     }
 }
 
@@ -92,16 +113,26 @@ Player.prototype.checkBoundaries = function() {
     }
     console.log('x = ' + player.x);
     console.log('y = ' + player.y);
+    // check to see if player has won the game.
+    if (player.y < 0) {
+        console.log('You won!!!');
+        player.x = 101 * 2;
+        player.y = (83 * 5) - 10;
+    }
 }
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var player = new Player(101 * 2, (83 * 5) - 10);
-var enemy = new Enemy(0, 83 - 20, 50)
 var allEnemies = [];
-allEnemies[0] = enemy;
+allEnemies[0] = new Enemy(0, (83 * 1) - 20, 50);
+allEnemies[2] = new Enemy(0, (83 * 2) - 20, 60);
+allEnemies[3] = new Enemy(0, (83 * 2) - 20, 80);
+allEnemies[4] = new Enemy(0, (83 * 3) - 20, 40);
+allEnemies[5] = new Enemy(0, (83 * 3) - 20, 70);
+allEnemies[6] = new Enemy(0, (83 * 3) - 20, 85);
 
+var player = new Player(101 * 2, (83 * 5) - 10);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
