@@ -1,6 +1,19 @@
-frontend-nanodegree-arcade-game
-===============================
+#Frogger Game
 
-Students should use this [rubric](https://www.udacity.com/course/viewer/#!/c-nd001/l-2696458597/m-2687128535) for self-checking their submission.
+The classic Frogger arcade game.
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+##Installing the software
+
+* **Copy** the source code to the desired location.
+* **Run** index.html in your favorite browser.
+
+##Playing the Game
+The object of the game is to get the Player from the grass to the water
+without encountering Enemy bugs.  The user controls the Player by using
+the four arrow keys on the keyboard (_up, down, right, left_).
+
+##History
+To read more about the history of the Frogger arcade game, click [here](https://en.wikipedia.org/wiki/Frogger).
+
+##License
+No license required.
