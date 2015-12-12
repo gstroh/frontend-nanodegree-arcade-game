@@ -60,6 +60,8 @@ Enemy.prototype.checkCollision = function() {
             console.log('collision');
             player.x = player.width * 2;
             player.y = (player.height * player.horizSquares) + player.offset;
+            score = 0;
+            displayScoreBoard();
         }
     }
 }
@@ -133,27 +135,71 @@ Player.prototype.checkBoundaries = function() {
     if (player.y < 0) {
         player.y = player.offset;
     }
-    //console.log('x = ' + player.x);
-    //console.log('y = ' + player.y);
     // Check to see if player has won the game.
     if (player.y < 0) {
         console.log('You won!!!');
         player.x = player.width * 2;
         player.y = (player.height * player.horizSquares) + player.offset;
+        // Increment the score and display it.
+        score = ++score;
+        displayScoreBoard();
     }
 }
 
+// set the initial values for score and difficulty level.
+var score = 0;
+var difficultyLevel = 0;
+
+// Display the score and difficulty level.
+var displayScoreBoard = function() {
+    var oldDifficultyLevel = difficultyLevel;
+    // Update difficultyLevel if needed.
+    difficultyLevel = Math.floor(score / 5.0);
+    // Create new enemies if difficulty level has increased.
+    if (oldDifficultyLevel != difficultyLevel) {
+        allocateEnemies();
+    }
+    // Score board text.
+    var scoreText = 'Score ' + score + ', Level ' + difficultyLevel;
+    ctx.font = "20px Georgia";
+    // Must fill background with white rectangle to clear text on each change.
+    ctx.fillStyle = "white";
+    ctx.fillRect(180, 0, 200, 100);
+    // Now, can display score board text on a clean white background.
+    ctx.fillStyle = "black";
+    ctx.fillText(scoreText, 180, 25);
+};
+
+// Create function to allocate enemies.
+var allocateEnemies = function() {
+    // Reset allEnemies.
+    allEnemies.length = 0
+    // Set variables.
+    var numEnemies = 3 + difficultyLevel + 1;
+    var rowEnemy = 1;
+    // Allocate enemies based on difficulty level.
+    for (var i = 0; i <= numEnemies - 1; i++) {
+        var speedEnemy = 40 + (Math.random() * (difficultyLevel + 1) * 10.0);
+        var yEnemy = (Enemy.prototype.height * rowEnemy) + Enemy.prototype.offset;
+        var enemy = new Enemy(0, yEnemy, speedEnemy);
+        // Put the new enemy in the allEnemies array.
+        allEnemies.push(enemy);
+        // Recycle enemy rows between 1 and 3.
+        rowEnemy = ++rowEnemy;
+        if (rowEnemy > 3) {
+            rowEnemy = 1;
+        }
+    }
+};
+
 // Instantiate game objects.
-// Place all enemy objects in an array called allEnemies.
-var allEnemies = [];
-allEnemies[0] = new Enemy(0, (83 * 1) - 20, 50);
-allEnemies[2] = new Enemy(0, (83 * 2) - 20, 60);
-allEnemies[3] = new Enemy(0, (83 * 2) - 20, 80);
-allEnemies[4] = new Enemy(0, (83 * 3) - 20, 40);
-allEnemies[5] = new Enemy(0, (83 * 3) - 20, 70);
-allEnemies[6] = new Enemy(0, (83 * 3) - 20, 85);
 // Place the player object in a variable called player.
 var player = new Player(101 * 2, (83 * 5) - 10);
+// Place all enemy objects in an array called allEnemies.
+var allEnemies = [];
+allocateEnemies();
+//displayScoreBoard(score, difficultyLevel);
+
 // This listens for key presses and sends the keys to the
 // Player.handleInput() method.
 document.addEventListener('keyup', function(e) {
