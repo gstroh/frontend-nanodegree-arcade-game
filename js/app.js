@@ -1,11 +1,15 @@
 // Enemy class.
 // Enemies our player must avoid.
-var Enemy = function(x, y, speed) {
+var Enemy = function(x, y, speed, spriteName) {
     // location
     this.x = x;
     this.y = y;
     // speed
     this.speed = speed;
+    // Image/sprite for enemy.
+    //this.sprite = 'images/enemy-bug.png';
+    this.spriteType = spriteName;
+    this.sprite = this.getSprite(spriteName);
 };
 // Set some Enemy constants in the prototype object
 // since it only has one instance.
@@ -17,9 +21,24 @@ Enemy.prototype.vertSquares = 6;
 Enemy.prototype.horizSquares = 5;
 // Offset enemy image to align correctly in game.
 Enemy.prototype.offset = -20;
-// Image/sprite for enemy.
-Enemy.prototype.sprite = 'images/enemy-bug.png';
 
+// The enemy sprite can be one of many.
+Enemy.prototype.getSprite = function(spriteName) {
+    var returnSprite = '';
+    if (spriteName == 'enemy') {
+        returnSprite = 'images/enemy-bug.png';
+    }
+    if (spriteName == 'heart') {
+        returnSprite = 'images/Heart.png';
+    }
+    if (spriteName == 'key') {
+        returnSprite = 'images/Key.png';
+    }
+    if (spriteName == 'star') {
+        returnSprite = 'images/Star.png';
+    }
+    return returnSprite;
+}
 // Update the enemy's position, required method for game.
 // Parameter: dt, a time delta between ticks.
 // When position updated, check for right boundary and collisions.
@@ -54,14 +73,32 @@ Enemy.prototype.checkCollision = function() {
         // has occured.
         var minX = Math.min(this.x, player.x);
         var maxX = Math.max(this.x + this.width, player.x + player.width);
-        //console.log('minX = ' + minX);
-        //console.log('maxX = ' + maxX);
+
         if ((maxX - minX) < (this.width * 2) - 1) {
-            console.log('collision');
-            player.x = player.width * 2;
-            player.y = (player.height * player.horizSquares) + player.offset;
-            score = 0;
-            displayScoreBoard();
+            if (this.spriteType == 'enemy') {
+                // enemy collision
+                console.log('enemy collision');
+                player.x = player.width * 2;
+                player.y = (player.height * player.horizSquares) + player.offset;
+                score = 0;
+                displayScoreBoard();
+            } else {
+                // special collision
+                console.log('special collision');
+                player.x = player.width * 2;
+                player.y = (player.height * player.horizSquares) + player.offset;
+                // incement the score based on the special sprite.
+                if (this.spriteType == 'key') {
+                    score = score + 3;
+                }
+                else if (this.spriteType == 'heart') {
+                    score = score + 7;
+                }
+                else if (this.spriteType == 'star') {
+                    score = score + 5;
+                }
+                displayScoreBoard();
+            }
         }
     }
 }
@@ -76,8 +113,6 @@ var Player = function(x, y) {
     // location
     this.x = x;
     this.y = y;
-    // image/sprite
-    this.sprite = 'images/char-boy.png';
 };
 
 // Set some Player constants in the prototype object
@@ -90,7 +125,8 @@ Player.prototype.vertSquares = 6;
 Player.prototype.horizSquares = 5;
 // Offset player image to align correctly in game.
 Player.prototype.offset = -10;
-
+// Image/sprite.
+Player.prototype.sprite = 'images/char-boy.png';
 // There is no need for this function since the player positiion
 // is controlled by user input.
 Player.prototype.update = function(dt) {};
@@ -100,19 +136,20 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// The player is controlled by user input.  This function handles that input.
 Player.prototype.handleInput = function(keyName) {
     console.log(keyName);
     // Handle player input keys.
     if (keyName == "left") {
         player.x = player.x - player.width;
     }
-    if (keyName == "right") {
+    else if (keyName == "right") {
         player.x = player.x + player.width;
     }
-    if (keyName == "up") {
+    else if (keyName == "up") {
         player.y = player.y - player.height;
     }
-    if (keyName == "down") {
+    else if (keyName == "down") {
         player.y = player.y + player.height;
     }
     // Check to see if the player has reached a boundary
@@ -138,6 +175,7 @@ Player.prototype.checkBoundaries = function() {
     // Check to see if player has won the game.
     if (player.y < 0) {
         console.log('You won!!!');
+        // Move the player to the starting position.
         player.x = player.width * 2;
         player.y = (player.height * player.horizSquares) + player.offset;
         // Increment the score and display it.
@@ -146,7 +184,7 @@ Player.prototype.checkBoundaries = function() {
     }
 }
 
-// set the initial values for score and difficulty level.
+// Set the initial values for score and difficulty level.
 var score = 0;
 var difficultyLevel = 0;
 
@@ -181,7 +219,20 @@ var allocateEnemies = function() {
     for (var i = 0; i <= numEnemies - 1; i++) {
         var speedEnemy = 40 + (Math.random() * (difficultyLevel + 1) * 10.0);
         var yEnemy = (Enemy.prototype.height * rowEnemy) + Enemy.prototype.offset;
-        var enemy = new Enemy(0, yEnemy, speedEnemy);
+        // Set the sprite to enemy, unless otherwise to spice things up!!
+        var spriteName = 'enemy';
+        var difficultyRandom = Math.random();
+        // Set special sprite by random generated number.
+        if (difficultyLevel > 0 && difficultyRandom > .7) {
+            spriteName= 'key';
+            if (difficultyRandom > .8){
+                spriteName = 'heart';
+            }
+            if (difficultyRandom > .9) {
+                spriteName = 'star';
+            }
+        }
+        var enemy = new Enemy(0, yEnemy, speedEnemy, spriteName);
         // Put the new enemy in the allEnemies array.
         allEnemies.push(enemy);
         // Recycle enemy rows between 1 and 3.
@@ -194,7 +245,7 @@ var allocateEnemies = function() {
 
 // Instantiate game objects.
 // Place the player object in a variable called player.
-var player = new Player(101 * 2, (83 * 5) - 10);
+var player = new Player(Player.prototype.width * 2, (Player.prototype.height * 5) + Player.prototype.offset);
 // Place all enemy objects in an array called allEnemies.
 var allEnemies = [];
 allocateEnemies();
