@@ -13,9 +13,9 @@ The object of the game is to get the Player from the grass to the water without 
 ##Scoring and Levels
 One point is gained by getting the Player to the water.  The Player is automatically returned to the starting square when getting to the water or after any collision.  The level starts at zero and increments with every five points scored.  Starting with level one, special enemies (not bugs) may appear in the game that allow the user to get more points:
 
-* key: 	 3 points [(Figure 1)](images/key.png?raw=true "Figure 1")
-* star:  5 points [(Figure 2)](images/star.png?raw=true "Figure 2")
-* heart: 7 points [(Figure 3)](images/heart.png?raw=true "Figure 3")
+* key: 	 3 points ![(Figure 1)](images/key.png?raw=true "Figure 1")
+* star:  5 points ![(Figure 2)](images/star.png?raw=true "Figure 2")
+* heart: 7 points ![(Figure 3)](images/heart.png?raw=true "Figure 3")
 
 When colliding with these special enemies, the user gains points instead of reseting the game score to zero and starting over.  As the levels increase, the number of enemies and their speed increase.
 

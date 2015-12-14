@@ -24,24 +24,24 @@ Enemy.prototype.offset = -20;
 
 // The enemy sprite can be one of many.
 Enemy.prototype.getSprite = function(spriteName) {
-    var returnSprite = '';
-    if (spriteName == 'enemy') {
-        returnSprite = 'images/enemy-bug.png';
+        var returnSprite = '';
+        if (spriteName == 'enemy') {
+            returnSprite = 'images/enemy-bug.png';
+        }
+        if (spriteName == 'heart') {
+            returnSprite = 'images/Heart.png';
+        }
+        if (spriteName == 'key') {
+            returnSprite = 'images/Key.png';
+        }
+        if (spriteName == 'star') {
+            returnSprite = 'images/Star.png';
+        }
+        return returnSprite;
     }
-    if (spriteName == 'heart') {
-        returnSprite = 'images/Heart.png';
-    }
-    if (spriteName == 'key') {
-        returnSprite = 'images/Key.png';
-    }
-    if (spriteName == 'star') {
-        returnSprite = 'images/Star.png';
-    }
-    return returnSprite;
-}
-// Update the enemy's position, required method for game.
-// Parameter: dt, a time delta between ticks.
-// When position updated, check for right boundary and collisions.
+    // Update the enemy's position, required method for game.
+    // Parameter: dt, a time delta between ticks.
+    // When position updated, check for right boundary and collisions.
 Enemy.prototype.update = function(dt) {
     // Multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
@@ -90,11 +90,9 @@ Enemy.prototype.checkCollision = function() {
                 // incement the score based on the special sprite.
                 if (this.spriteType == 'key') {
                     score = score + 3;
-                }
-                else if (this.spriteType == 'heart') {
+                } else if (this.spriteType == 'heart') {
                     score = score + 7;
-                }
-                else if (this.spriteType == 'star') {
+                } else if (this.spriteType == 'star') {
                     score = score + 5;
                 }
                 displayScoreBoard();
@@ -142,14 +140,11 @@ Player.prototype.handleInput = function(keyName) {
     // Handle player input keys.
     if (keyName == "left") {
         player.x = player.x - player.width;
-    }
-    else if (keyName == "right") {
+    } else if (keyName == "right") {
         player.x = player.x + player.width;
-    }
-    else if (keyName == "up") {
+    } else if (keyName == "up") {
         player.y = player.y - player.height;
-    }
-    else if (keyName == "down") {
+    } else if (keyName == "down") {
         player.y = player.y + player.height;
     }
     // Check to see if the player has reached a boundary
@@ -212,7 +207,7 @@ var displayScoreBoard = function() {
 var allocateEnemies = function() {
     // Reset allEnemies.
     allEnemies.length = 0
-    // Set variables.
+        // Set variables.
     var numEnemies = 3 + difficultyLevel + 1;
     var rowEnemy = 1;
     // Allocate enemies based on difficulty level.
@@ -224,8 +219,8 @@ var allocateEnemies = function() {
         var difficultyRandom = Math.random();
         // Set special sprite by random generated number.
         if (difficultyLevel > 0 && difficultyRandom > .7) {
-            spriteName= 'key';
-            if (difficultyRandom > .8){
+            spriteName = 'key';
+            if (difficultyRandom > .8) {
                 spriteName = 'heart';
             }
             if (difficultyRandom > .9) {
