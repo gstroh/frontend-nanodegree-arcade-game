@@ -1,3 +1,6 @@
+// Constants
+var ROW_WIDTH = 101,
+    ROW_HEIGHT = 83;
 // Enemy class.
 // Enemies our player must avoid.
 var Enemy = function(x, y, speed, spriteName) {
@@ -14,34 +17,34 @@ var Enemy = function(x, y, speed, spriteName) {
 // Set some Enemy constants in the prototype object
 // since it only has one instance.
 // Width & height of each enemy square in game.
-Enemy.prototype.width = 101;
-Enemy.prototype.height = 83;
+Enemy.prototype.WIDTH = ROW_WIDTH;
+Enemy.prototype.HEIGHT = ROW_HEIGHT;
 // Number of vertical and horizontal squares in game.
-Enemy.prototype.vertSquares = 6;
-Enemy.prototype.horizSquares = 5;
+Enemy.prototype.VERTSQUARES = 6;
+Enemy.prototype.HORIZSQUARES = 5;
 // Offset enemy image to align correctly in game.
-Enemy.prototype.offset = -20;
+Enemy.prototype.OFFSET = -20;
 
 // The enemy sprite can be one of many.
 Enemy.prototype.getSprite = function(spriteName) {
-        var returnSprite = '';
-        if (spriteName == 'enemy') {
-            returnSprite = 'images/enemy-bug.png';
-        }
-        if (spriteName == 'heart') {
-            returnSprite = 'images/Heart.png';
-        }
-        if (spriteName == 'key') {
-            returnSprite = 'images/Key.png';
-        }
-        if (spriteName == 'star') {
-            returnSprite = 'images/Star.png';
-        }
-        return returnSprite;
+    var returnSprite = '';
+    if (spriteName == 'enemy') {
+        returnSprite = 'images/enemy-bug.png';
     }
-    // Update the enemy's position, required method for game.
-    // Parameter: dt, a time delta between ticks.
-    // When position updated, check for right boundary and collisions.
+    if (spriteName == 'heart') {
+        returnSprite = 'images/Heart.png';
+    }
+    if (spriteName == 'key') {
+        returnSprite = 'images/Key.png';
+    }
+    if (spriteName == 'star') {
+        returnSprite = 'images/Star.png';
+    }
+    return returnSprite;
+};
+// Update the enemy's position, required method for game.
+// Parameter: dt, a time delta between ticks.
+// When position updated, check for right boundary and collisions.
 Enemy.prototype.update = function(dt) {
     // Multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
@@ -56,10 +59,10 @@ Enemy.prototype.update = function(dt) {
 // Check to see if the enemy has gone off the right boundary of the screen.
 // If it has, reset to left side of screen.
 Enemy.prototype.checkRightBoundary = function() {
-    if (this.x >= this.width * this.horizSquares) {
+    if (this.x >= this.WIDTH * this.HORIZSQUARES) {
         this.x = 0;
     }
-}
+};
 
 // Check to see if enemy has collided with player.
 // If it has, reset player to initial position.
@@ -72,21 +75,21 @@ Enemy.prototype.checkCollision = function() {
         // x coordinates is less than two image widths, a collision
         // has occured.
         var minX = Math.min(this.x, player.x);
-        var maxX = Math.max(this.x + this.width, player.x + player.width);
+        var maxX = Math.max(this.x + this.WIDTH, player.x + player.WIDTH);
 
-        if ((maxX - minX) < (this.width * 2) - 1) {
+        if ((maxX - minX) < (this.WIDTH * 2) - 1) {
             if (this.spriteType == 'enemy') {
                 // enemy collision
                 console.log('enemy collision');
-                player.x = player.width * 2;
-                player.y = (player.height * player.horizSquares) + player.offset;
+                player.x = player.WIDTH * 2;
+                player.y = (player.HEIGHT * player.HORIZSQUARES) + player.OFFSET;
                 score = 0;
                 displayScoreBoard();
             } else {
                 // special collision
                 console.log('special collision');
-                player.x = player.width * 2;
-                player.y = (player.height * player.horizSquares) + player.offset;
+                player.x = player.WIDTH * 2;
+                player.y = (player.HEIGHT * player.HORIZSQUARES) + player.OFFSET;
                 // incement the score based on the special sprite.
                 if (this.spriteType == 'key') {
                     score = score + 3;
@@ -99,7 +102,7 @@ Enemy.prototype.checkCollision = function() {
             }
         }
     }
-}
+};
 
 // Draw the enemy on the screen, required method for game.
 Enemy.prototype.render = function() {
@@ -116,13 +119,13 @@ var Player = function(x, y) {
 // Set some Player constants in the prototype object
 // since it only has one instance.
 // Width & height of each player square in game.
-Player.prototype.width = 101;
-Player.prototype.height = 83;
+Player.prototype.WIDTH = ROW_WIDTH;
+Player.prototype.HEIGHT = ROW_HEIGHT;
 // Number of vertical and horizontal squares in game.
-Player.prototype.vertSquares = 6;
-Player.prototype.horizSquares = 5;
+Player.prototype.VERTSQUARES = 6;
+Player.prototype.HORIZSQUARES = 5;
 // Offset player image to align correctly in game.
-Player.prototype.offset = -10;
+Player.prototype.OFFSET = -10;
 // Image/sprite.
 Player.prototype.sprite = 'images/char-boy.png';
 // There is no need for this function since the player positiion
@@ -139,45 +142,46 @@ Player.prototype.handleInput = function(keyName) {
     console.log(keyName);
     // Handle player input keys.
     if (keyName == "left") {
-        player.x = player.x - player.width;
+        this.x = this.x - this.WIDTH;
     } else if (keyName == "right") {
-        player.x = player.x + player.width;
+        this.x = this.x + this.WIDTH;
     } else if (keyName == "up") {
-        player.y = player.y - player.height;
+        this.y = this.y - this.HEIGHT;
     } else if (keyName == "down") {
-        player.y = player.y + player.height;
+        this.y = this.y + this.HEIGHT;
     }
     // Check to see if the player has reached a boundary
     // or won the game.
-    Player.prototype.checkBoundaries();
+    //Player.prototype.checkBoundaries();
+    this.checkBoundaries();
 };
 
 // Check to see if the player has reached a boundary or won the game.
 Player.prototype.checkBoundaries = function() {
     // Check the player boundaries.
-    if (player.x >= player.horizSquares * player.width) {
-        player.x = (player.horizSquares - 1) * player.width;
+    if (this.x >= this.HORIZSQUARES * this.WIDTH) {
+        this.x = (this.HORIZSQUARES - 1) * this.WIDTH;
     }
-    if (player.x < 0) {
-        player.x = 0
+    if (this.x < 0) {
+        this.x = 0;
     }
-    if (player.y >= (player.vertSquares - 1) * player.height) {
-        player.y = ((player.vertSquares - 1) * player.height) + player.offset;
+    if (this.y >= (this.VERTSQUARES - 1) * this.HEIGHT) {
+        this.y = ((this.VERTSQUARES - 1) * this.HEIGHT) + this.OFFSET;
     }
-    if (player.y < 0) {
-        player.y = player.offset;
+    if (this.y < 0) {
+        this.y = this.OFFSET;
     }
     // Check to see if player has won the game.
-    if (player.y < 0) {
+    if (this.y < 0) {
         console.log('You won!!!');
         // Move the player to the starting position.
-        player.x = player.width * 2;
-        player.y = (player.height * player.horizSquares) + player.offset;
+        this.x = this.WIDTH * 2;
+        this.y = (this.HEIGHT * this.HORIZSQUARES) + this.OFFSET;
         // Increment the score and display it.
         score = ++score;
         displayScoreBoard();
     }
-}
+};
 
 // Set the initial values for score and difficulty level.
 var score = 0;
@@ -206,24 +210,24 @@ var displayScoreBoard = function() {
 // Create function to allocate enemies.
 var allocateEnemies = function() {
     // Reset allEnemies.
-    allEnemies.length = 0
-        // Set variables.
+    allEnemies.length = 0;
+    // Set variables.
     var numEnemies = 3 + difficultyLevel + 1;
     var rowEnemy = 1;
     // Allocate enemies based on difficulty level.
     for (var i = 0; i <= numEnemies - 1; i++) {
         var speedEnemy = 40 + (Math.random() * (difficultyLevel + 1) * 10.0);
-        var yEnemy = (Enemy.prototype.height * rowEnemy) + Enemy.prototype.offset;
+        var yEnemy = (Enemy.prototype.HEIGHT * rowEnemy) + Enemy.prototype.OFFSET;
         // Set the sprite to enemy, unless otherwise to spice things up!!
         var spriteName = 'enemy';
         var difficultyRandom = Math.random();
         // Set special sprite by random generated number.
-        if (difficultyLevel > 0 && difficultyRandom > .7) {
+        if (difficultyLevel > 0 && difficultyRandom > 0.7) {
             spriteName = 'key';
-            if (difficultyRandom > .8) {
+            if (difficultyRandom > 0.8) {
                 spriteName = 'heart';
             }
-            if (difficultyRandom > .9) {
+            if (difficultyRandom > 0.9) {
                 spriteName = 'star';
             }
         }
@@ -240,7 +244,7 @@ var allocateEnemies = function() {
 
 // Instantiate game objects.
 // Place the player object in a variable called player.
-var player = new Player(Player.prototype.width * 2, (Player.prototype.height * 5) + Player.prototype.offset);
+var player = new Player(Player.prototype.WIDTH * 2, (Player.prototype.HEIGHT * 5) + Player.prototype.OFFSET);
 // Place all enemy objects in an array called allEnemies.
 var allEnemies = [];
 allocateEnemies();
